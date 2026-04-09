@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "fastapi-cloud-scaler"
+version = "1.0.0"
+description = "Cloud Scaling Environment API"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+]
