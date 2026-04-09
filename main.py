@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from typing import Optional
 from env import CloudScalingEnv
-from models import Observation, StepResponse  # ✅ import from models.py
+from models import Observation, StepResponse
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -11,7 +11,7 @@ env: Optional[CloudScalingEnv] = None
 
 
 # -----------------------------
-# Request Models (keep here)
+# Request Models
 # -----------------------------
 class ResetRequest(BaseModel):
     difficulty: str = "medium"
@@ -21,12 +21,22 @@ class StepRequest(BaseModel):
 
 
 # -----------------------------
-# Reset Endpoint
+# Reset Endpoint (POST)
 # -----------------------------
 @app.post("/reset", response_model=Observation)
-def reset(req: ResetRequest):
+def reset(req: ResetRequest = ResetRequest()):  # ✅ default added
     global env
     env = CloudScalingEnv(difficulty=req.difficulty)
+    return env.reset()
+
+
+# -----------------------------
+# Reset Endpoint (GET) 
+# -----------------------------
+@app.get("/reset", response_model=Observation)  # ✅ GET added
+def reset_get():
+    global env
+    env = CloudScalingEnv(difficulty="medium")
     return env.reset()
 
 
@@ -57,3 +67,11 @@ def step(req: StepRequest):
         "reward": float(reward),
         "done": bool(done)
     }
+
+
+# -----------------------------
+# Health Check
+# -----------------------------
+@app.get("/")  # ✅ health check added
+def root():
+    return {"status": "ok", "message": "Cloud Scaling API is running"}
